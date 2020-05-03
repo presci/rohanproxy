@@ -60,35 +60,32 @@ server.on('connection', (clientToProxySocket) => {
             console.log("Didn't match: " + addressMatch);
             //clientToProxySocket.write('HTTP/1.1 404 \r\n\n');
             return clientToProxySocket.emit('error', new Error('404 Invalid url'));
-        }
-        
+        }else {     
 
         let proxyToServerSocket = net.createConnection({
             host: serverAddress,
             port: serverPort
         }, () => {
             console.log("Proxy to Server Setup");
-            console.log(data);
-            console.log("------------------");
-            console.log("------------------");
-            if ( isTLSConnection){
-                console.log("Sending Connect Response");
-                clientToProxySocket.write('HTTP/1.1 200 OK\r\n\n');
-            } else {
-                proxyToServerSocket.write(data);
-            }
-            clientToProxySocket.pipe(proxyToServerSocket);
-            proxyToServerSocket.pipe(clientToProxySocket);
+                if ( isTLSConnection){
+                    console.log("Sending Connect Response");
+                    clientToProxySocket.write('HTTP/1.1 200 OK\r\n\n');
+                } else {
+                    proxyToServerSocket.write(data);
+                }
+                clientToProxySocket.pipe(proxyToServerSocket);
+                proxyToServerSocket.pipe(clientToProxySocket);
 
-            proxyToServerSocket.on('error', (err)=>{
-                console.log('Proxy to Server error');
-                console.log(err);
+                proxyToServerSocket.on('error', (err)=>{
+                    console.log('Proxy to Server error');
+                    console.log(err);
+                });
+                clientToProxySocket.on('error', (err)=>{
+                    console.log('Client to proxy error');
+                    console.log(err);
+                });
             });
-            clientToProxySocket.on('error', (err)=>{
-                console.log('Client to proxy error');
-                console.log(err);
-            });
-        })
+        }
     });
 });
 
