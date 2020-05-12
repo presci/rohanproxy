@@ -23,9 +23,9 @@ server.on('connection', (clientToProxySocket) => {
     clientToProxySocket.on('error', (err) => {
         console.log(err);
         // clientToProxySocket.write('Status: 404\r\n\r\n');
-        var response404="<html><head></head><body><h1>Not Found</h1></body></html>"
-        clientToProxySocket.end('HTTP/1.1 404\r\nContent-Type: text/html\r\n\r\n'+ response404);
-        // clientToProxySocket.destroy();
+        // var response404="<html><head></head><body><h1>Not Found</h1></body></html>"
+        // clientToProxySocket.end('HTTP/1.1 404\r\nContent-Type: text/html\r\n\r\n'+ response404);
+        clientToProxySocket.destroy();
     });
 
     clientToProxySocket.once('data', (data) =>{
